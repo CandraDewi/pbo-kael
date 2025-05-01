@@ -7,12 +7,13 @@ import lombok.*;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-@Table(name = "orders") // 
+@Table(name = "orders") //
 public class Order {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    private String customerName; // Added customer name field
     private int quantity;
 
     @ManyToOne

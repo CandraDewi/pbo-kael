@@ -4,6 +4,7 @@ import com.kidaro.kael.model.Order;
 import com.kidaro.kael.service.OrderService;
 import lombok.*;
 
+import org.springframework.http.ResponseEntity; // Added import
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -16,7 +17,8 @@ public class OrderController {
 
     @PostMapping
     public Order placeOrder(@RequestBody OrderRequest request) {
-        return orderService.placeOrder(request.getMaterialId(), request.getQuantity());
+        // Pass customerName to the service
+        return orderService.placeOrder(request.getMaterialId(), request.getQuantity(), request.getCustomerName());
     }
 
     @GetMapping
@@ -24,9 +26,18 @@ public class OrderController {
         return orderService.getAllOrders();
     }
 
+    // Added endpoint to get a single order by ID
+    @GetMapping("/{id}")
+    public ResponseEntity<Order> getOrderById(@PathVariable Long id) {
+        return orderService.getOrderById(id)
+                .map(ResponseEntity::ok)
+                .orElse(ResponseEntity.notFound().build());
+    }
+
     @Getter @Setter
     public static class OrderRequest {
         private Long materialId;
         private int quantity;
+        private String customerName; // Added customerName field
     }
 }

@@ -1,210 +1,254 @@
 <!DOCTYPE html>
-<html lang="en" class="bg-white text-black">
+<html lang="en" class="bg-gray-100 text-black">
 <head>
-  <meta charset="UTF-8">
-  <title>Order Material - Neo Brutalist</title>
-  <script src="https://cdn.tailwindcss.com"></script>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700&display=swap" rel="stylesheet">
-  <style>
-    /* Use Inter font, but could be swapped for 'Courier New', monospace etc. */
-    body {
-      font-family: 'Inter', ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", sans-serif;
-    }
-    /* Optional: Add a subtle patterned background */
-    /* html { background-color: #ffffff; opacity: 1; background-image: linear-gradient(#cccccc 1px, transparent 1px), linear-gradient(to right, #cccccc 1px, #ffffff 1px); background-size: 20px 20px; } */
-  </style>
+    <meta charset="UTF-8">
+    <title>Kael POS - New Order</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700;800&display=swap" rel="stylesheet">
+    <script>
+        // Simple route protection
+        if (sessionStorage.getItem('isLoggedIn') !== 'true') {
+            window.location.href = '/login.html';
+        }
+    </script>
+    <style>
+        body {
+            font-family: 'Inter', ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", sans-serif;
+        }
+        /* Custom styling for select dropdown arrow */
+        select {
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
+            background-repeat: no-repeat;
+            background-position: right 1rem center;
+            background-size: 1.2em;
+            appearance: none; /* Remove default arrow */
+            -webkit-appearance: none;
+            -moz-appearance: none;
+        }
+         /* Hide default number input arrows */
+        input[type=number]::-webkit-inner-spin-button,
+        input[type=number]::-webkit-outer-spin-button {
+            -webkit-appearance: none;
+            margin: 0;
+        }
+        input[type=number] {
+            -moz-appearance: textfield; /* Firefox */
+        }
+    </style>
 </head>
-<body class="p-4 md:p-10 font-sans">
-  <div class="max-w-md mx-auto bg-white border-4 border-black shadow-[8px_8px_0_0_#000]">
-    <div class="bg-yellow-300 p-6 text-center border-b-4 border-black">
-      <h2 class="text-2xl md:text-3xl font-bold text-black flex items-center justify-center gap-2">
-        🛒 Place New Order
-      </h2>
-      </div>
+<body class="p-6 md:p-10 antialiased">
 
-    <div class="p-6">
-      <form id="orderForm" class="space-y-6">
-        <div>
-          <label for="materialSelect" class="block text-sm font-bold text-black mb-1">Material</label>
-          <select id="materialSelect" class="w-full border-2 border-black bg-white px-4 py-2.5 focus:outline-none focus:border-blue-500 focus:ring-0 appearance-auto">
-            <option disabled selected>Loading materials...</option>
-          </select>
+    <div class="max-w-4xl mx-auto bg-white border-4 border-black shadow-[10px_10px_0_0_#000]">
+
+        <div class="bg-black text-white p-4 border-b-4 border-black flex justify-between items-center">
+            <h1 class="text-xl md:text-2xl font-bold flex items-center gap-2">
+                <span class="text-2xl">🛒</span> Kael POS - New Material Order
+            </h1>
+            <button id="logoutButton" class="bg-red-500 text-white font-bold py-1 px-3 border-2 border-black shadow-[2px_2px_0_0_#000] hover:bg-red-400 active:shadow-[1px_1px_0_0_#000] active:translate-x-[1px] active:translate-y-[1px] transition-all duration-150 text-sm">
+                Logout
+            </button>
         </div>
 
-        <div>
-          <label for="quantity" class="block text-sm font-bold text-black mb-1">Quantity</label>
-          <input type="number" id="quantity" class="w-full border-2 border-black px-4 py-2.5 focus:outline-none focus:border-blue-500 focus:ring-0" min="1" value="1" />
+        <div class="p-6 md:p-8 grid grid-cols-1 md:grid-cols-2 gap-8">
+
+            <div class="border-4 border-black shadow-[6px_6px_0_0_#000] bg-amber-50 p-6">
+                <h2 class="text-xl font-bold mb-6 border-b-2 border-black pb-2">Order Details</h2>
+                <form id="orderForm" class="space-y-6">
+                    <div>
+                        <label for="materialSelect" class="block text-sm font-bold text-black mb-1">1. Select Material</label>
+                        <select id="materialSelect" class="w-full border-2 border-black bg-white px-4 py-3 font-medium focus:outline-none focus:ring-4 focus:ring-offset-0 focus:ring-lime-400 transition-shadow duration-150">
+                            <option disabled selected>Loading materials...</option>
+                        </select>
+                    </div>
+
+                    <div>
+                        <label for="quantity" class="block text-sm font-bold text-black mb-1">2. Enter Quantity</label>
+                         <div class="flex">
+                             <input type="number" id="quantity" class="w-full border-2 border-black px-4 py-3 font-medium focus:outline-none focus:ring-4 focus:ring-offset-0 focus:ring-lime-400 transition-shadow duration-150" min="1" value="1" />
+                             </div>
+                    </div>
+
+                    <div>
+                        <label for="customerName" class="block text-sm font-bold text-black mb-1">3. Customer Name</label>
+                        <input type="text" id="customerName" class="w-full border-2 border-black px-4 py-3 font-medium focus:outline-none focus:ring-4 focus:ring-offset-0 focus:ring-lime-400 transition-shadow duration-150" placeholder="Enter customer name" required />
+                    </div>
+                    </form>
+            </div>
+
+            <div class="space-y-6 flex flex-col">
+                 <div class="border-4 border-black shadow-[6px_6px_0_0_#000] bg-lime-100 p-6 flex-grow flex flex-col justify-center items-center text-center">
+                     <h3 class="text-lg font-bold text-gray-700 mb-2">ORDER TOTAL</h3>
+                     <div id="priceDisplay" class="text-5xl md:text-6xl font-extrabold text-black mb-4">
+                         Rp 0
+                     </div>
+                     <p class="text-sm text-gray-600">(Price calculated based on selection)</p>
+                 </div>
+
+                 <button type="submit" form="orderForm" class="w-full bg-lime-400 text-black font-bold py-4 px-6 border-4 border-black shadow-[6px_6px_0_0_#000] hover:bg-lime-300 hover:shadow-[8px_8px_0_0_#000] active:shadow-[3px_3px_0_0_#000] active:translate-x-[3px] active:translate-y-[3px] transition-all duration-150 text-center text-xl flex items-center justify-center gap-2">
+                     <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"> <path d="M3 3h2l.4 2M7 13h10l4-8H5m4 8V6m4 0v8" /> </svg>
+                     PLACE ORDER
+                 </button>
+
+                 <div class="border-t-4 border-black pt-4">
+                    <a href="/orders.html" class="group flex items-center justify-center gap-2 text-center text-black font-bold py-2 hover:text-lime-600 transition-colors duration-150">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"> <path d="M19 5H5a2 2 0 0 0-2 2v10a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2z" /> <path d="M16 2v4M8 2v4M2 10h20"/> </svg>
+                        View All Orders
+                    </a>
+                </div>
+            </div>
         </div>
-
-        <div class="bg-lime-300 border-2 border-black p-4">
-          <div class="flex justify-between items-center">
-            <span class="font-bold text-black">Total Price:</span>
-            <span id="priceDisplay" class="text-xl font-bold text-black">Rp 0</span>
-          </div>
-        </div>
-
-        <button type="submit" class="w-full bg-black text-white font-bold py-2.5 px-4 border-2 border-black hover:bg-white hover:text-black transition-colors duration-150 flex items-center justify-center gap-2">
-          <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"> <path d="M3 3h2l.4 2M7 13h10l4-8H5m4 8V6m4 0v8" />
-          </svg>
-          Place Order
-        </button>
-      </form>
-
-      <div class="mt-6 border-t-2 border-black pt-4">
-        <a href="/orders.html" class="flex items-center justify-center gap-2 text-center text-black hover:bg-gray-200 font-bold underline py-2">
-          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"> <path d="M19 5H5a2 2 0 0 0-2 2v10a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2z" />
-            <polyline points="12 12 12 16 16 16" />
-          </svg>
-          View All Orders
-        </a>
-      </div>
+    </div> <div id="successToast" class="hidden fixed bottom-6 right-6 bg-green-400 text-black px-5 py-3 border-4 border-black shadow-[6px_6px_0_0_#000] flex items-center gap-3 z-20">
+        <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"> <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14" /> <polyline points="22 4 12 14.01 9 11.01" /> </svg>
+        <span class="font-bold">Order placed successfully!</span>
     </div>
-  </div>
-
-  <div id="successToast" class="hidden fixed bottom-4 right-4 bg-green-400 text-black px-4 py-2 border-2 border-black shadow-[4px_4px_0_0_#000] flex items-center gap-2">
-     <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"> <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14" />
-       <polyline points="22 4 12 14.01 9 11.01" />
-     </svg>
-     Order placed successfully!
-   </div>
 
 
-  <script>
-    // --- JavaScript remains the same ---
-    let materials = [];
-    const materialSelect = document.getElementById('materialSelect');
-    const quantityInput = document.getElementById('quantity');
-    const priceDisplay = document.getElementById('priceDisplay');
-    const toast = document.getElementById('successToast');
+    <script>
+        // --- JavaScript Logic (largely the same, just ensure selectors are correct) ---
+        let materials = [];
+        const materialSelect = document.getElementById('materialSelect');
+        const quantityInput = document.getElementById('quantity');
+        const customerNameInput = document.getElementById('customerName'); // Get customer name input
+        const priceDisplay = document.getElementById('priceDisplay');
+        const toast = document.getElementById('successToast');
+        const orderForm = document.getElementById('orderForm'); // Get form reference
+        const logoutButton = document.getElementById('logoutButton');
 
-    async function fetchMaterials() {
-      try {
-        // Simulate fetch delay/network request
-        // In a real app: const res = await fetch('/materials');
-        await new Promise(resolve => setTimeout(resolve, 500)); // Simulate loading
-        // Dummy Data for demonstration:
-        materials = [
-          { id: 1, name: "Sand", unitPrice: 50000 },
-          { id: 2, name: "Gravel", unitPrice: 75000 },
-          { id: 3, name: "Cement (Sack)", unitPrice: 65000 },
-          { id: 4, name: "Brick (piece)", unitPrice: 1000 }
-        ];
-        // const materials = await res.json(); // Use this line in real app
+        async function fetchMaterials() {
+            try {
+                // Fetch materials from the API
+                const response = await fetch('/materials');
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                materials = await response.json();
 
-        // Clear loading option
-        materialSelect.innerHTML = '';
+                materialSelect.innerHTML = ''; // Clear loading or previous options
 
-        if (materials.length === 0) {
-          const opt = document.createElement('option');
-          opt.disabled = true;
-          opt.textContent = 'No materials available';
-          materialSelect.appendChild(opt);
-          return;
+                if (materials.length === 0) {
+                    const errorOpt = document.createElement('option');
+                    errorOpt.disabled = true;
+                    errorOpt.selected = true;
+                    errorOpt.textContent = '-- No materials available --';
+                    materialSelect.appendChild(errorOpt);
+                    return;
+                 }
+
+                // Add default select option
+                const defaultOpt = document.createElement('option');
+                defaultOpt.disabled = true;
+                defaultOpt.selected = true;
+                defaultOpt.textContent = '-- Select Material --';
+                materialSelect.appendChild(defaultOpt);
+
+                // Populate materials
+                materials.forEach(material => {
+                    const opt = document.createElement('option');
+                    opt.value = material.id;
+                    opt.textContent = `${material.name}`; // Keep it clean
+                    opt.dataset.price = material.unitPrice;
+                    materialSelect.appendChild(opt);
+                });
+
+                updatePrice();
+            } catch (error) { 
+                console.error("Error fetching materials:", error);
+                materialSelect.innerHTML = ''; // Clear loading
+                const errorOpt = document.createElement('option');
+                errorOpt.disabled = true;
+                errorOpt.selected = true;
+                errorOpt.textContent = '-- Error loading materials --';
+                materialSelect.appendChild(errorOpt);
+             }
         }
 
-        // Add a default "Select Material" option
-        const defaultOpt = document.createElement('option');
-        defaultOpt.disabled = true;
-        defaultOpt.selected = true;
-        defaultOpt.textContent = '-- Select Material --';
-        materialSelect.appendChild(defaultOpt);
+        function formatCurrency(amount) {
+             // Format for Indonesian Rupiah
+             return `Rp ${amount.toLocaleString('id-ID')}`;
+        }
+
+        function updatePrice() {
+            const selectedOption = materialSelect.options[materialSelect.selectedIndex];
+            const qty = parseInt(quantityInput.value) || 0;
+
+            if (selectedOption && selectedOption.dataset.price && qty > 0) {
+                const unitPrice = parseInt(selectedOption.dataset.price);
+                const total = qty * unitPrice;
+                priceDisplay.textContent = formatCurrency(total); // Use formatter
+            } else {
+                priceDisplay.textContent = formatCurrency(0); // Use formatter
+            }
+        }
+
+        function showSuccessToast() {
+            toast.classList.remove('hidden');
+            setTimeout(() => {
+                toast.classList.add('hidden');
+            }, 3000);
+        }
+
+        function handleLogout() {
+            sessionStorage.removeItem('isLoggedIn');
+            window.location.href = '/login.html';
+        }
+
+        // --- Event Listeners ---
+        materialSelect.addEventListener('change', updatePrice);
+        quantityInput.addEventListener('input', updatePrice);
+        logoutButton.addEventListener('click', handleLogout);
+
+        orderForm.addEventListener('submit', async (e) => { // Listen on form element
+            e.preventDefault();
+
+            const materialId = parseInt(materialSelect.value);
+            const quantity = parseInt(quantityInput.value);
+            const customerName = customerNameInput.value.trim(); // Get customer name
+
+            if (isNaN(materialId) || !materialSelect.options[materialSelect.selectedIndex].dataset.price || quantity < 1) {
+                alert("Please select a valid material and enter a quantity of at least 1.");
+                return;
+            }
+            if (!customerName) { // Validate customer name
+                alert("Please enter the customer name.");
+                return;
+            }
 
 
-        materials.forEach(material => {
-          const opt = document.createElement('option');
-          opt.value = material.id;
-          // Displaying price in the option might be too long, keep it clean
-          opt.textContent = `${material.name}`;
-          // Store price data directly on the option element
-          opt.dataset.price = material.unitPrice;
-          materialSelect.appendChild(opt);
+            console.log('Submitting order:', { materialId, quantity, customerName }); // Include customer name in log
+
+            try {
+                console.log('Simulating API call...');
+                // Replace dummy data with actual API call
+                const response = await fetch('/orders', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ materialId, quantity, customerName }), // Send customer name
+                });
+
+                if (response.ok) {
+                    console.log('Order placed successfully!');
+                    showSuccessToast();
+                    // Reset form
+                    quantityInput.value = 1;
+                    customerNameInput.value = ''; // Clear customer name input
+                    materialSelect.selectedIndex = 0; // Reset to "-- Select Material --"
+                    updatePrice();
+                } else {
+                     const errorData = await response.json();
+                     throw new Error(errorData.message || `HTTP error! status: ${response.status}`);
+                }
+            } catch (error) {
+                console.error('Order error:', error);
+                alert(`Failed to place order: ${error.message}`);
+            }
         });
 
-        updatePrice(); // Initial price update (will be Rp 0)
-      } catch (error) {
-        console.error('Error fetching materials:', error);
-        materialSelect.innerHTML = '<option disabled>Error loading materials</option>';
-      }
-    }
+        // Initial fetch
+        fetchMaterials();
 
-    function updatePrice() {
-        const selectedOption = materialSelect.options[materialSelect.selectedIndex];
-        const qty = parseInt(quantityInput.value) || 0; // Ensure quantity is a number, default to 0
-
-        // Check if a valid material is selected (not the '-- Select Material --' option)
-        if (selectedOption && selectedOption.dataset.price) {
-            const unitPrice = parseInt(selectedOption.dataset.price);
-            const total = qty * unitPrice;
-            priceDisplay.textContent = `Rp ${total.toLocaleString('id-ID')}`;
-        } else {
-            // If no material selected or quantity is invalid, show 0
-            priceDisplay.textContent = `Rp 0`;
-        }
-    }
-
-
-    function showSuccessToast() {
-      toast.classList.remove('hidden');
-      // Optional: remove fade animation if it feels too smooth for brutalism
-      // toast.classList.add('animate-fade-in');
-      setTimeout(() => {
-        toast.classList.add('hidden');
-        // toast.classList.remove('animate-fade-in');
-      }, 3000);
-    }
-
-    materialSelect.addEventListener('change', updatePrice);
-    quantityInput.addEventListener('input', updatePrice);
-
-    document.getElementById('orderForm').addEventListener('submit', async (e) => {
-      e.preventDefault();
-
-      const materialId = parseInt(materialSelect.value);
-      const quantity = parseInt(quantityInput.value);
-
-      // Ensure a material is actually selected and quantity is valid
-      if (isNaN(materialId) || !materialSelect.options[materialSelect.selectedIndex].dataset.price || quantity < 1) {
-        alert("Please select a valid material and enter a quantity of at least 1.");
-        return;
-      }
-
-      // Find the material details (optional if only ID and quantity needed for backend)
-      const material = materials.find(m => m.id === materialId);
-
-      console.log('Submitting order:', { materialId, quantity }); // Log for debugging
-
-      try {
-        // Simulate API Call
-        console.log('Simulating API call...');
-        await new Promise(resolve => setTimeout(resolve, 500)); // Simulate network delay
-        const simulatedResponseOk = true; // Change to false to test error
-
-        // In a real app:
-        // const res = await fetch('/orders', {
-        //   method: 'POST',
-        //   headers: {'Content-Type': 'application/json'},
-        //   body: JSON.stringify({ materialId, quantity })
-        // });
-
-        // if (res.ok) { // Use this condition in real app
-        if (simulatedResponseOk) {
-          console.log('Order simulation successful!');
-          showSuccessToast();
-          // Reset form: set quantity to 1, select default option, update price
-          quantityInput.value = 1;
-          materialSelect.selectedIndex = 0; // Reset to "-- Select Material --"
-          updatePrice();
-        } else {
-          throw new Error('Simulated order failed'); // Or extract error from res in real app
-        }
-      } catch (error) {
-        console.error('Order error:', error);
-        alert(`Failed to place order: ${error.message}`);
-      }
-    });
-
-    // Initial fetch
-    fetchMaterials();
-  </script>
+    </script>
 </body>
 </html>

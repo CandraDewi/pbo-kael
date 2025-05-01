@@ -1,38 +1,122 @@
 <!DOCTYPE html>
-<html lang="en" class="bg-[#fff1f5] text-black">
+<html lang="en" class="bg-amber-50 text-black scroll-smooth">
 <head>
-  <meta charset="UTF-8">
-  <title>POS Login</title>
-  <script src="https://cdn.tailwindcss.com"></script>
+    <meta charset="UTF-8">
+    <title>Kael Construction POS - Streamline Your Orders</title>
+    <meta name="description" content="The simple, powerful Point-of-Sale system for construction materials. Stop wrestling spreadsheets and build faster with Kael POS.">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700;800&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", sans-serif;
+        }
+        /* Add a subtle texture/pattern to the background if desired */
+        body::before {
+            content: "";
+            position: fixed;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            background-image: url('data:image/svg+xml,...'); 
+            opacity: 0.05;
+            z-index: -1;
+        }
+
+        /* Optional: Style for active nav link if using JS scroll spying */
+        .nav-link.active { border-bottom: 4px solid #000; }
+    </style>
 </head>
-<body class="p-10 font-mono">
-  <div class="max-w-md mx-auto bg-pink-200 border-4 border-black p-6 rounded-xl">
-    <h1 class="text-2xl font-bold mb-4">🧾 Construction POS Login</h1>
-    <form id="loginForm" class="flex flex-col gap-4">
-      <input name="username" placeholder="Username" class="border-2 border-black px-4 py-2" required />
-      <input name="password" placeholder="Password" type="password" class="border-2 border-black px-4 py-2" required />
-      <button type="submit" class="bg-yellow-300 border-2 border-black px-4 py-2 hover:bg-yellow-200">Login</button>
-    </form>
-    <div id="result" class="mt-4 text-sm font-bold"></div>
-  </div>
-  <script>
-    document.getElementById("loginForm").addEventListener("submit", async (e) => {
-      e.preventDefault();
-      const res = await fetch("/auth/login", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          username: e.target.username.value,
-          password: e.target.password.value
-        })
-      });
-      const data = await res.json();
-      if (res.ok) {
-        window.location.href = "/order.html";
-      } else {
-        document.getElementById("result").innerText = "❌ Login failed!";
-      }
-    });
-  </script>
+<body class="antialiased">
+
+    <header class="bg-white border-b-4 border-black sticky top-0 z-10 shadow-[0px_8px_0_0_#000]">
+        <div class="container mx-auto px-6 py-4 flex justify-between items-center">
+            <a href="#hero" class="text-2xl font-bold flex items-center gap-2 text-black">
+                <span class="text-2xl">🏗️</span> Kael POS
+            </a>
+            <nav class="hidden md:flex space-x-6">
+                <a href="#hero" class="mt-2 nav-link font-semibold text-black hover:text-lime-600 transition-colors">Home</a>
+                <a href="#features" class="mt-2 nav-link font-semibold text-black hover:text-lime-600 transition-colors">Features</a>
+                <a href="#cta" class="mt-2 nav-link font-semibold text-black hover:text-lime-600 transition-colors">Get Started</a>
+                <a href="/login.html" class="px-4 py-2 bg-lime-400 text-black font-bold   border-2 border-black shadow-[3px_3px_0_0_#000] hover:bg-lime-300 hover:shadow-[4px_4px_0_0_#000] active:shadow-[1px_1px_0_0_#000] active:translate-x-[1px] active:translate-y-[1px] transition-all duration-150 text-center text-sm">
+                    <div>
+                      Login &rarr;
+                    </div>
+                      
+                </a>
+            </nav>
+             <button class="md:hidden text-black font-bold">MENU</button>
+        </div>
+    </header>
+
+    <main>
+        <section id="hero" class="bg-amber-100 py-20 md:py-32 border-b-4 border-black">
+            <div class="container mx-auto px-6 text-center">
+                <h1 class="text-5xl md:text-7xl font-extrabold mb-6 text-black leading-tight">
+                    Stop Wrestling Spreadsheets. <br class="hidden md:block"> Build <span class="text-lime-600">Faster</span>.
+                </h1>
+                <p class="text-lg md:text-xl text-gray-800 mb-10 max-w-2xl mx-auto">
+                    Kael Construction POS streamlines your material orders from site to supplier. Simple, fast, and brutally efficient.
+                </p>
+                <a href="/login.html" class="inline-block bg-lime-400 text-black font-bold py-4 px-10 border-4 border-black shadow-[8px_8px_0_0_#000] hover:bg-lime-300 hover:shadow-[10px_10px_0_0_#000] active:shadow-[4px_4px_0_0_#000] active:translate-x-[4px] active:translate-y-[4px] transition-all duration-150 text-center text-lg">
+                    Get Started Now &rarr;
+                </a>
+                 <!-- <div class="mt-16">
+                     <div class="inline-block bg-white border-4 border-black p-4 shadow-[8px_8px_0_0_#000]">
+                        <img src="https://lh3.googleusercontent.com/fife/ALs6j_EwCYEsf-cL5sIlu38WY9hZs92dzRk9uBK1Wuno-QFpKjbKniog4B1gq1sTOWeUvlQRioaJR93_ovZWWX_HEqIdcTpJnEmEFRcAtIJ5mreOiwsjiguzNZJyjYJMX31z51iLO-dO_lSNy8riyVkvEPdoNj4pk3O0wKyT9OIeiXKYXdgYdGjaeruS-fC-jFBJh_0XYErJGrgjDoHgblI6DcIbA01aWYoowB_8m2d-lGbSMhQ4kPQo5oonOJxD_3BibZ90pK_JJKR-BVQwE5P3a3ShEIMB7M1RQRk5b8oRiKlFbpOjznRLsNrHlm6yPemP4qImUI-J3b4_xbHub__wYr29j_SWi7QST6sSjyYeDudEV97tvOvGIBG1Ek3j8viIUsZwd6LQgqWvz57JEztBJPuOFgnOOErK8YxH2SOr8OpnZH6XfBuiAgWVWObrO0a_5wazpDB3d65By9JCdtIqfiLojcbDcJ1d2j0MssFR5L-mYhnwofKJU5RBBk2hce_6uMnOwl5OvjysNXnx-RLZS9D0jVIHlnNf6_TghDGnAsgFaXqqxDPJsieqLSgvcb9w41QiOofwlpJNlqc7kt2n5dBgucF7FQ_cS7G0BdTikjjImObSf27kG1fkhKSDz9nPEtKoQtwunKU88i_5Z4wtXHXSpzcSCv8l_DAnMbCbcI6qa_B1lZAfL1J-y80ULcGqy8Zt2IGs2SXSAiJo7OeSqoCr0xp56qf9Zm13QuhEGeDWfBTbsmbAMAOPLY_TbDeN3qkuDu-a2L5yYpep8u3wl2W6-aP5QZhtKSeXvcbxbcudyKV03prZgWe7jGA2D3iiHzBG9gHO7Xo8WT3-IjCfbHsqhWO2JrkG1xcrYN2-rwwbozclWAu3LMxX50WAgAIBNsgXaDqfY4zkMG6ithUE_TCv85eDxJdTpHXjkaMXU4T-6J7TPC9pGBg8aKFEcDznDvcFijqHrzXi5rIttlwXb197wxUxQpSu4FpZM_JQawmiH4dENLCMgddU3CCvGKBf6yQ2c8tS6m4iAa3FJdxSV0GmE9wcBkmge4AnY1Lgr5R5byqWJI0dwObfOaHZJczHee9GNkxXTx9kyrGH0CWSwGLInCY1d0XpF_8ou9Q41y8eMQ7e_--GoJtbUzAPI4JvFecyBHhpx5ag1V1w-IzPmSaVySSTnx6_Ky6wqk5V5gzopYx08pZqXmePzUrmE4ezsl0WKjD44AGoBlPQQaH6IUcvlCkvQ1zQTqIlDyvS1gRKb01TZBmgMxmATllyKXhdaCPzdERi-kQLwUjA7ocXU90G4FAIhI4FIBqydnYpzRGoSsV9Zctt01HBMSMDot3VqfnmazEOIAcSHn4EKQjjCzEwvn6fejpZfxvyqvJPZlsOkzGdgDGq9Oq9w8TR5YPiMwRW6w2b5yQXeIlsuR_TpaS1=s512" alt="Kael POS Mockup" class="border-2 border-black">
+                        <img src="" class="border-2 border-black">
+                    </div>
+                 </div> -->
+            </div>
+        </section>
+
+        <section id="features" class="py-20 md:py-28 bg-white">
+            <div class="container mx-auto px-6">
+                <h2 class="text-4xl md:text-5xl font-bold text-center mb-16 text-black">Why Kael POS <span class="text-fuchsia-600">Rocks</span></h2>
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-10">
+                    <div class="bg-white border-4 border-black p-8 shadow-[8px_8px_0_0_#000] hover:shadow-[10px_10px_0_0_#000] transition-shadow duration-150">
+                        <div class="text-4xl mb-4">⚡️</div>
+                        <h3 class="text-2xl font-bold mb-3">Instant Ordering</h3>
+                        <p class="text-gray-700">Place material orders directly from the site in seconds. No more phone calls or lost paper forms.</p>
+                    </div>
+                    <div class="bg-white border-4 border-black p-8 shadow-[8px_8px_0_0_#000] hover:shadow-[10px_10px_0_0_#000] transition-shadow duration-150">
+                        <div class="text-4xl mb-4">📦</div>
+                        <h3 class="text-2xl font-bold mb-3">Simple Tracking</h3>
+                        <p class="text-gray-700">Know what materials are ordered, delivered, and used. Basic inventory at your fingertips.</p>
+                    </div>
+                    <div class="bg-white border-4 border-black p-8 shadow-[8px_8px_0_0_#000] hover:shadow-[10px_10px_0_0_#000] transition-shadow duration-150">
+                        <div class="text-4xl mb-4">🤝</div>
+                        <h3 class="text-2xl font-bold mb-3">Supplier Friendly</h3>
+                        <p class="text-gray-700">Generate clear, digital purchase orders your suppliers will love (or at least understand).</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="cta" class="py-20 md:py-28 bg-cyan-400 border-y-4 border-black">
+            <div class="container mx-auto px-6 text-center">
+                 <div class="inline-block bg-white border-4 border-black p-10 md:p-16 shadow-[8px_8px_0_0_rgba(0,0,0,0.4)]">
+                    <h2 class="text-3xl md:text-5xl font-bold mb-6 text-black">Ready to Simplify Your Site Orders?</h2>
+                    <p class="text-lg md:text-xl text-gray-800 mb-10 max-w-xl mx-auto">
+                        Spend less time managing materials and more time building. Try Kael POS today.
+                    </p>
+                    <a href="/login.html" class="inline-block bg-lime-400 text-black font-bold py-4 px-10 border-4 border-black shadow-[8px_8px_0_0_#000] hover:bg-lime-300 hover:shadow-[10px_10px_0_0_#000] active:shadow-[4px_4px_0_0_#000] active:translate-x-[4px] active:translate-y-[4px] transition-all duration-150 text-center text-lg">
+                        Start Free Trial Now &rarr;
+                    </a>
+                 </div>
+            </div>
+        </section>
+
+    </main>
+
+    <footer class="bg-white border-t-4 border-black py-8">
+        <div class="container mx-auto px-6 text-center text-gray-600">
+            <p>&copy; 2025 Kael Construction Solutions. Built with 🏗️ in Purwokerto, Indonesia.</p>
+            <div class="mt-4 space-x-4">
+                <a href="#" class="hover:text-black">Privacy Policy</a>
+                <a href="#" class="hover:text-black">Terms of Service</a>
+            </div>
+        </div>
+    </footer>
+
 </body>
 </html>
