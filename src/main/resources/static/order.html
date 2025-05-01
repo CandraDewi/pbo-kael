@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="en" class="bg-white text-black">
+<head>
+  <meta charset="UTF-8">
+  <title>Order Material - Neo Brutalist</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700&display=swap" rel="stylesheet">
+  <style>
+    /* Use Inter font, but could be swapped for 'Courier New', monospace etc. */
+    body {
+      font-family: 'Inter', ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", sans-serif;
+    }
+    /* Optional: Add a subtle patterned background */
+    /* html { background-color: #ffffff; opacity: 1; background-image: linear-gradient(#cccccc 1px, transparent 1px), linear-gradient(to right, #cccccc 1px, #ffffff 1px); background-size: 20px 20px; } */
+  </style>
+</head>
+<body class="p-4 md:p-10 font-sans">
+  <div class="max-w-md mx-auto bg-white border-4 border-black shadow-[8px_8px_0_0_#000]">
+    <div class="bg-yellow-300 p-6 text-center border-b-4 border-black">
+      <h2 class="text-2xl md:text-3xl font-bold text-black flex items-center justify-center gap-2">
+        🛒 Place New Order
+      </h2>
+      </div>
+
+    <div class="p-6">
+      <form id="orderForm" class="space-y-6">
+        <div>
+          <label for="materialSelect" class="block text-sm font-bold text-black mb-1">Material</label>
+          <select id="materialSelect" class="w-full border-2 border-black bg-white px-4 py-2.5 focus:outline-none focus:border-blue-500 focus:ring-0 appearance-auto">
+            <option disabled selected>Loading materials...</option>
+          </select>
+        </div>
+
+        <div>
+          <label for="quantity" class="block text-sm font-bold text-black mb-1">Quantity</label>
+          <input type="number" id="quantity" class="w-full border-2 border-black px-4 py-2.5 focus:outline-none focus:border-blue-500 focus:ring-0" min="1" value="1" />
+        </div>
+
+        <div class="bg-lime-300 border-2 border-black p-4">
+          <div class="flex justify-between items-center">
+            <span class="font-bold text-black">Total Price:</span>
+            <span id="priceDisplay" class="text-xl font-bold text-black">Rp 0</span>
+          </div>
+        </div>
+
+        <button type="submit" class="w-full bg-black text-white font-bold py-2.5 px-4 border-2 border-black hover:bg-white hover:text-black transition-colors duration-150 flex items-center justify-center gap-2">
+          <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"> <path d="M3 3h2l.4 2M7 13h10l4-8H5m4 8V6m4 0v8" />
+          </svg>
+          Place Order
+        </button>
+      </form>
+
+      <div class="mt-6 border-t-2 border-black pt-4">
+        <a href="/orders.html" class="flex items-center justify-center gap-2 text-center text-black hover:bg-gray-200 font-bold underline py-2">
+          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"> <path d="M19 5H5a2 2 0 0 0-2 2v10a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2z" />
+            <polyline points="12 12 12 16 16 16" />
+          </svg>
+          View All Orders
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <div id="successToast" class="hidden fixed bottom-4 right-4 bg-green-400 text-black px-4 py-2 border-2 border-black shadow-[4px_4px_0_0_#000] flex items-center gap-2">
+     <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"> <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14" />
+       <polyline points="22 4 12 14.01 9 11.01" />
+     </svg>
+     Order placed successfully!
+   </div>
+
+
+  <script>
+    // --- JavaScript remains the same ---
+    let materials = [];
+    const materialSelect = document.getElementById('materialSelect');
+    const quantityInput = document.getElementById('quantity');
+    const priceDisplay = document.getElementById('priceDisplay');
+    const toast = document.getElementById('successToast');
+
+    async function fetchMaterials() {
+      try {
+        // Simulate fetch delay/network request
+        // In a real app: const res = await fetch('/materials');
+        await new Promise(resolve => setTimeout(resolve, 500)); // Simulate loading
+        // Dummy Data for demonstration:
+        materials = [
+          { id: 1, name: "Sand", unitPrice: 50000 },
+          { id: 2, name: "Gravel", unitPrice: 75000 },
+          { id: 3, name: "Cement (Sack)", unitPrice: 65000 },
+          { id: 4, name: "Brick (piece)", unitPrice: 1000 }
+        ];
+        // const materials = await res.json(); // Use this line in real app
+
+        // Clear loading option
+        materialSelect.innerHTML = '';
+
+        if (materials.length === 0) {
+          const opt = document.createElement('option');
+          opt.disabled = true;
+          opt.textContent = 'No materials available';
+          materialSelect.appendChild(opt);
+          return;
+        }
+
+        // Add a default "Select Material" option
+        const defaultOpt = document.createElement('option');
+        defaultOpt.disabled = true;
+        defaultOpt.selected = true;
+        defaultOpt.textContent = '-- Select Material --';
+        materialSelect.appendChild(defaultOpt);
+
+
+        materials.forEach(material => {
+          const opt = document.createElement('option');
+          opt.value = material.id;
+          // Displaying price in the option might be too long, keep it clean
+          opt.textContent = `${material.name}`;
+          // Store price data directly on the option element
+          opt.dataset.price = material.unitPrice;
+          materialSelect.appendChild(opt);
+        });
+
+        updatePrice(); // Initial price update (will be Rp 0)
+      } catch (error) {
+        console.error('Error fetching materials:', error);
+        materialSelect.innerHTML = '<option disabled>Error loading materials</option>';
+      }
+    }
+
+    function updatePrice() {
+        const selectedOption = materialSelect.options[materialSelect.selectedIndex];
+        const qty = parseInt(quantityInput.value) || 0; // Ensure quantity is a number, default to 0
+
+        // Check if a valid material is selected (not the '-- Select Material --' option)
+        if (selectedOption && selectedOption.dataset.price) {
+            const unitPrice = parseInt(selectedOption.dataset.price);
+            const total = qty * unitPrice;
+            priceDisplay.textContent = `Rp ${total.toLocaleString('id-ID')}`;
+        } else {
+            // If no material selected or quantity is invalid, show 0
+            priceDisplay.textContent = `Rp 0`;
+        }
+    }
+
+
+    function showSuccessToast() {
+      toast.classList.remove('hidden');
+      // Optional: remove fade animation if it feels too smooth for brutalism
+      // toast.classList.add('animate-fade-in');
+      setTimeout(() => {
+        toast.classList.add('hidden');
+        // toast.classList.remove('animate-fade-in');
+      }, 3000);
+    }
+
+    materialSelect.addEventListener('change', updatePrice);
+    quantityInput.addEventListener('input', updatePrice);
+
+    document.getElementById('orderForm').addEventListener('submit', async (e) => {
+      e.preventDefault();
+
+      const materialId = parseInt(materialSelect.value);
+      const quantity = parseInt(quantityInput.value);
+
+      // Ensure a material is actually selected and quantity is valid
+      if (isNaN(materialId) || !materialSelect.options[materialSelect.selectedIndex].dataset.price || quantity < 1) {
+        alert("Please select a valid material and enter a quantity of at least 1.");
+        return;
+      }
+
+      // Find the material details (optional if only ID and quantity needed for backend)
+      const material = materials.find(m => m.id === materialId);
+
+      console.log('Submitting order:', { materialId, quantity }); // Log for debugging
+
+      try {
+        // Simulate API Call
+        console.log('Simulating API call...');
+        await new Promise(resolve => setTimeout(resolve, 500)); // Simulate network delay
+        const simulatedResponseOk = true; // Change to false to test error
+
+        // In a real app:
+        // const res = await fetch('/orders', {
+        //   method: 'POST',
+        //   headers: {'Content-Type': 'application/json'},
+        //   body: JSON.stringify({ materialId, quantity })
+        // });
+
+        // if (res.ok) { // Use this condition in real app
+        if (simulatedResponseOk) {
+          console.log('Order simulation successful!');
+          showSuccessToast();
+          // Reset form: set quantity to 1, select default option, update price
+          quantityInput.value = 1;
+          materialSelect.selectedIndex = 0; // Reset to "-- Select Material --"
+          updatePrice();
+        } else {
+          throw new Error('Simulated order failed'); // Or extract error from res in real app
+        }
+      } catch (error) {
+        console.error('Order error:', error);
+        alert(`Failed to place order: ${error.message}`);
+      }
+    });
+
+    // Initial fetch
+    fetchMaterials();
+  </script>
+</body>
+</html>

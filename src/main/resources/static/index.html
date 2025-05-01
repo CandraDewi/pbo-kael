@@ -1,16 +1,38 @@
 <!DOCTYPE html>
-<html lang="en" class="bg-pink-50 font-mono text-black">
+<html lang="en" class="bg-[#fff1f5] text-black">
 <head>
-  <meta charset="UTF-8" />
-  <title>💌 Menfess Home</title>
+  <meta charset="UTF-8">
+  <title>POS Login</title>
   <script src="https://cdn.tailwindcss.com"></script>
 </head>
-<body class="flex flex-col items-center justify-center min-h-screen gap-8 p-6">
-  <h1 class="text-4xl font-bold underline decoration-wavy">💌 Welcome to Menfess!</h1>
-
-  <div class="flex gap-4">
-    <a href="/submit.html" class="bg-pink-200 border-4 border-black px-6 py-3 rounded hover:bg-pink-300">✍️ Submit</a>
-    <a href="/wall.html" class="bg-sky-200 border-4 border-black px-6 py-3 rounded hover:bg-sky-300">📜 View Wall</a>
+<body class="p-10 font-mono">
+  <div class="max-w-md mx-auto bg-pink-200 border-4 border-black p-6 rounded-xl">
+    <h1 class="text-2xl font-bold mb-4">🧾 Construction POS Login</h1>
+    <form id="loginForm" class="flex flex-col gap-4">
+      <input name="username" placeholder="Username" class="border-2 border-black px-4 py-2" required />
+      <input name="password" placeholder="Password" type="password" class="border-2 border-black px-4 py-2" required />
+      <button type="submit" class="bg-yellow-300 border-2 border-black px-4 py-2 hover:bg-yellow-200">Login</button>
+    </form>
+    <div id="result" class="mt-4 text-sm font-bold"></div>
   </div>
+  <script>
+    document.getElementById("loginForm").addEventListener("submit", async (e) => {
+      e.preventDefault();
+      const res = await fetch("/auth/login", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          username: e.target.username.value,
+          password: e.target.password.value
+        })
+      });
+      const data = await res.json();
+      if (res.ok) {
+        window.location.href = "/order.html";
+      } else {
+        document.getElementById("result").innerText = "❌ Login failed!";
+      }
+    });
+  </script>
 </body>
 </html>

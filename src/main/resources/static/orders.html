@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en" class="bg-white text-black">
+<head>
+  <meta charset="UTF-8">
+  <title>All Orders - Neo Brutalist</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700&display=swap" rel="stylesheet">
+  <style>
+    body {
+      font-family: 'Inter', ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", sans-serif;
+    }
+    /* Removed the previous hover style */
+  </style>
+</head>
+<body class="p-6 md:p-10 font-sans">
+  <div class="max-w-3xl mx-auto mb-8 text-center">
+    <h1 class="text-3xl md:text-4xl font-bold text-black flex items-center justify-center gap-2">
+      <span>📦</span> Order Management Dashboard
+    </h1>
+    </div>
+
+  <div class="max-w-3xl mx-auto bg-white border-4 border-black p-6 shadow-[8px_8px_0_0_#000]">
+    <ul id="orders" class="space-y-4 mb-6">
+        <li class="text-center py-6 text-black font-bold">Loading orders...</li>
+    </ul>
+
+    <a href="/order.html"
+       class="inline-flex items-center gap-2 px-4 py-2 bg-black text-white border-2 border-black
+              font-bold hover:bg-white hover:text-black transition-colors duration-150">
+      <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3">
+        <path d="M19 12H5M12 19l-7-7 7-7" />
+      </svg>
+      Back to Order Page
+    </a>
+  </div>
+
+  <script>
+    // --- Dummy Data for Demonstration ---
+    const dummyOrders = [
+        { id: 101, quantity: 5, material: { id: 1, name: "Sand", unitPrice: 50000 } },
+        { id: 102, quantity: 2, material: { id: 3, name: "Cement (Sack)", unitPrice: 65000 } },
+        { id: 103, quantity: 150, material: { id: 4, name: "Brick (piece)", unitPrice: 1000 } },
+    ];
+
+    // Function to simulate fetching data
+    async function fetchOrders() {
+        console.log("Simulating fetch orders...");
+        // In a real app: return fetch("/orders").then(res => res.json());
+        await new Promise(resolve => setTimeout(resolve, 500)); // Simulate network delay
+        // Return dummy data or empty array to test states
+         return Promise.resolve(dummyOrders);
+        // return Promise.resolve([]); // Use this line to test empty state
+    }
+
+    fetchOrders()
+      .then(data => {
+        const container = document.getElementById("orders");
+        container.innerHTML = ''; // Clear loading/previous content
+
+        if (!data || data.length === 0) {
+          const empty = document.createElement("li");
+          // Starker empty state message
+          empty.className = "text-center py-6 text-black font-bold";
+          empty.textContent = "No orders found. Create one!";
+          container.appendChild(empty);
+          return;
+        }
+
+        data.forEach(order => {
+          // Calculate total price
+          const total = order.quantity * order.material.unitPrice;
+          const formattedTotal = total.toLocaleString('id-ID'); // Format for Indonesian Rupiah
+
+          const el = document.createElement("li");
+          // Neo-Brutalist style for list items: sharp corners, thick border
+          el.className = "p-4 border-2 border-black bg-white space-y-2"; // Use bg-white or maybe bg-gray-100
+
+          el.innerHTML = `
+            <div class="flex justify-between items-center">
+              <span class="font-bold text-lg text-black">🛒 Order #${order.id}</span>
+              <span class="px-2 py-0.5 bg-yellow-300 text-black border border-black text-xs font-bold">
+                NEW
+              </span>
+            </div>
+
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-x-4 gap-y-1">
+              <div>
+                <span class="text-black">📦 Material:</span>
+                <span class="font-bold text-black">${order.material.name}</span>
+              </div>
+              <div>
+                <span class="text-black">🔢 Qty:</span>
+                <span class="font-bold text-black">${order.quantity}</span>
+              </div>
+            </div>
+
+            <div class="flex justify-end mt-2 pt-2 border-t-2 border-black">
+              <span class="font-bold text-lg text-black">Rp ${formattedTotal}</span>
+            </div>
+          `;
+
+          container.appendChild(el);
+        });
+      })
+      .catch(error => {
+          console.error("Error fetching orders:", error);
+          const container = document.getElementById("orders");
+          container.innerHTML = '<li class="text-center py-6 text-red-600 font-bold">Error loading orders. Please try again later.</li>';
+      });
+  </script>
+</body>
+</html>
