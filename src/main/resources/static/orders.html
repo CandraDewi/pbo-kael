@@ -4,6 +4,12 @@
     <meta charset="UTF-8">
     <title>Kael POS - All Orders</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script>
+        // Simple route protection
+        if (sessionStorage.getItem('isLoggedIn') !== 'true') {
+            window.location.href = '/login.html';
+        }
+    </script>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700;800&display=swap" rel="stylesheet">
     <script>
@@ -117,7 +123,7 @@
                      <span class="text-gray-600 text-sm mr-2">Total:</span>
                      <span class="font-extrabold text-xl md:text-2xl text-black">${formattedTotal}</span>
                 </div>
-                <a href="/receipt.html?id=${order.id}">View Receipt</a>
+                <a class='bg-rose-300 border-2 border-black px-2' href="/receipt.html?id=${order.id}">View Receipt</a>
                 `;
             return card;
         }
