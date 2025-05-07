@@ -2,24 +2,22 @@
 <html lang="en" class="bg-blue-50">
 <head>
   <meta charset="UTF-8" />
-  <title>Login</title>
+  <title>Register</title>
   <script defer>
-    async function login(event) {
+    async function register(event) {
       event.preventDefault();
-      const role = document.getElementById("role").value;
       const username = document.getElementById("username").value;
       const password = document.getElementById("password").value;
 
-      const res = await fetch(`/api/auth/login/${role}?username=${username}&password=${password}`, {
+      const res = await fetch(`/api/auth/register?username=${username}&password=${password}`, {
         method: "POST"
       });
 
       if (res.ok) {
-        localStorage.setItem("username", username);
-        localStorage.setItem("password", password);
-        window.location = role === "customer" ? "customer.html" : "manager.html";
+        alert("Registered!");
+        window.location = "login.html";
       } else {
-        alert("Login failed");
+        alert("Error");
       }
     }
   </script>
@@ -45,7 +43,7 @@
       background-color: #007acc;
       color: white;
     }
-    input, select, button {
+    input, button {
       border: 2px solid #003366;
       padding: 10px;
       margin-bottom: 10px;
@@ -67,23 +65,19 @@
       h2 {
         font-size: 1.5rem;
       }
-      input, select, button {
+      input, button {
         padding: 5px;
       }
     }
   </style>
 </head>
 <body class="flex items-center justify-center h-screen">
-  <form class="bg-white p-8 rounded shadow-md space-y-4 w-96" onsubmit="login(event)">
-    <h2 class="text-xl font-bold">Login</h2>
-    <select id="role" class="w-full p-2 border rounded">
-      <option value="customer">Customer</option>
-      <option value="manager">Manager</option>
-    </select>
+  <form class="bg-white p-8 rounded shadow-md space-y-4 w-96" onsubmit="register(event)">
+    <h2 class="text-xl font-bold">Register</h2>
     <input id="username" class="w-full p-2 border rounded" placeholder="Username" required />
     <input id="password" type="password" class="w-full p-2 border rounded" placeholder="Password" required />
-    <button class="w-full bg-green-500 text-white p-2 rounded hover:bg-green-600">Login</button>
-    <a href="register.html" class="text-blue-500 text-sm">Create an account</a>
+    <button class="w-full bg-blue-500 text-white p-2 rounded hover:bg-blue-600">Register</button>
+    <a href="login.html" class="text-blue-500 text-sm">Already have an account?</a>
   </form>
 </body>
 </html>

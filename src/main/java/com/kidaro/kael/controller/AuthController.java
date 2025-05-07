@@ -1,24 +1,29 @@
 package com.kidaro.kael.controller;
-import com.kidaro.kael.service.UserService;
+import com.kidaro.kael.model.Customer;
+import com.kidaro.kael.model.Manager;
+import com.kidaro.kael.service.AuthService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.*;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.Map;
-
 @RestController
-@RequestMapping("/auth")
+@RequestMapping("/api/auth")
 @RequiredArgsConstructor
 public class AuthController {
-    private final UserService userService;
 
-    @PostMapping("/login")
-    public ResponseEntity<?> login(@RequestBody Map<String, String> payload) {
-        String username = payload.get("username");
-        String password = payload.get("password");
+    private final AuthService authService;
 
-        return userService.login(username, password)
-            .map(user -> ResponseEntity.ok(Map.of("userId", user.getId(), "role", user.getClass().getSimpleName())))
-            .orElse(ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(Map.of("error", "Invalid credentials")));
+    @PostMapping("/register")
+    public Customer register(@RequestParam String username, @RequestParam String password) {
+        return authService.registerCustomer(username, password);
+    }
+
+    @PostMapping("/login/customer")
+    public Customer loginCustomer(@RequestParam String username, @RequestParam String password) {
+        return authService.loginCustomer(username, password);
+    }
+
+    @PostMapping("/login/manager")
+    public Manager loginManager(@RequestParam String username, @RequestParam String password) {
+        return authService.loginManager(username, password);
     }
 }

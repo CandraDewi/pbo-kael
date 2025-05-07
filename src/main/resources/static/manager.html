@@ -1,0 +1,277 @@
+<!DOCTYPE html>
+<html lang="en" class="bg-blue-50">
+<head>
+  <meta charset="UTF-8" />
+  <title>Manager Dashboard</title>
+  <script defer>
+    async function loadAllLoans() {
+      const username = localStorage.getItem("username");
+      const password = localStorage.getItem("password");
+      console.log("loadAllLoans called. Username:", username);
+
+      try {
+        const res = await fetch(`/api/loans/all?username=${username}&password=${password}`);
+        console.log("Loans API response status:", res.status);
+
+        if (!res.ok) {
+          console.error("Loans API request failed:", res.statusText);
+          const errorText = await res.text();
+          console.error("Loans API error response text:", errorText);
+          document.getElementById("loan-list").innerHTML = "<li>Error loading loans.</li>";
+          return;
+        }
+
+        const loans = await res.json();
+        console.log("Loans data from API:", loans);
+
+        const list = document.getElementById("loan-list");
+        if (!list) {
+            console.error("Element with ID 'loan-list' not found!");
+            return;
+        }
+        list.innerHTML = ""; // Clear existing content
+
+        if (!Array.isArray(loans)) {
+            console.error("Loans data is not an array:", loans);
+            list.innerHTML = "<li>Received invalid loan data format.</li>";
+            return;
+        }
+
+        if (loans.length === 0) {
+            console.log("No loans data to display.");
+            list.innerHTML = "<li>No loans found.</li>";
+            return;
+        }
+
+        loans.forEach((loan, index) => {
+          console.log(`Processing loan item ${index}:`, loan);
+          // Assuming loan.customer.username exists as per original code
+          const customerUsername = loan.customer && loan.customer.username ? loan.customer.username : 'N/A';
+          const loanAmount = loan.amount !== undefined ? loan.amount : 'N/A';
+          const loanDueDate = loan.dueDate ? loan.dueDate : 'N/A';
+          const loanStatus = loan.status ? loan.status : 'PENDING';
+          const loanId = loan.id ? loan.id : null;
+
+          if (!loanId) {
+              console.warn(`Loan item ${index} is missing an ID. Buttons might not work.`, loan);
+          }
+
+          list.innerHTML += `
+            <li class="p-2 border rounded space-x-2">
+              <span>${customerUsername} borrowed ${loanAmount} due ${loanDueDate}</span>
+              <strong>${loanStatus}</strong>
+              ${loanStatus === 'PENDING' && loanId ? `
+                <button onclick="updateStatus('${loanId}', 'APPROVED')" class="text-green-600">✅ Approve</button>
+                <button onclick="updateStatus('${loanId}', 'REJECTED')" class="text-red-600">❌ Reject</button>
+              ` : ''}
+            </li>`;
+        });
+      } catch (error) {
+        console.error("Error in loadAllLoans:", error);
+        const list = document.getElementById("loan-list");
+        if (list) {
+            list.innerHTML = "<li>An error occurred while loading loans.</li>";
+        }
+      }
+    }
+
+    async function updateStatus(id, status) {
+      const username = localStorage.getItem("username");
+      const password = localStorage.getItem("password");
+      console.log(`Updating loan status for ID: ${id} to ${status}`);
+      try {
+        const response = await fetch(`/api/loans/status?username=${username}&password=${password}&loanId=${id}&status=${status}`, {
+          method: "POST"
+        });
+        if (!response.ok) {
+            console.error("Failed to update loan status:", response.status, await response.text());
+            alert("Failed to update loan status."); // Or some other user feedback
+        }
+        loadAllLoans(); // Refresh the list
+      } catch (error) {
+          console.error("Error calling updateStatus API:", error);
+          alert("An error occurred while trying to update loan status.");
+      }
+    }
+
+    window.onload = function() {
+      console.log("Window loaded. Attempting to load all loans and savings.");
+      loadAllLoans();
+      loadAllSavings();
+      loadWeeklyRate();
+    };
+
+    async function loadAllSavings() {
+      const username = localStorage.getItem("username");
+      const password = localStorage.getItem("password");
+      console.log("loadAllSavings called. Username:", username);
+
+      try {
+        const res = await fetch(`/api/loans/allSavings?username=${username}&password=${password}`);
+        console.log("Savings API response status:", res.status);
+
+        if (!res.ok) {
+          console.error("Savings API request failed:", res.statusText);
+          const errorText = await res.text();
+          console.error("Savings API error response text:", errorText);
+          document.getElementById("all-saving-list").innerHTML = "<li>Error loading savings.</li>";
+          return;
+        }
+
+        const savings = await res.json();
+        console.log("Savings data from API:", savings);
+
+        const list = document.getElementById("all-saving-list");
+        if (!list) {
+            console.error("Element with ID 'all-saving-list' not found!");
+            return;
+        }
+        list.innerHTML = ""; // Clear existing content
+
+        if (!Array.isArray(savings)) {
+            console.error("Savings data is not an array:", savings);
+            list.innerHTML = "<li>Received invalid savings data format.</li>";
+            return;
+        }
+
+        if (savings.length === 0) {
+            console.log("No savings data to display.");
+            list.innerHTML = "<li>No savings records found.</li>";
+            return;
+        }
+
+        savings.forEach((saving, index) => {
+          console.log(`Processing saving item ${index}:`, saving);
+          // Adjusted to match the provided JSON structure for savings
+          // saving.customer.username is NOT available in the provided JSON for savings
+          const savingDate = saving.date ? saving.date : 'N/A';
+          const savingAmount = saving.amount !== undefined ? saving.amount : 'N/A'; // Use !== undefined for numbers that could be 0
+          const savingStatus = saving.status ? saving.status : 'PENDING';
+          const savingId = saving.id ? saving.id : null;
+
+          if (!savingId) {
+              console.warn(`Saving item ${index} is missing an ID. Buttons might not work.`, saving);
+          }
+
+          list.innerHTML += `
+            <li class="border p-2 rounded space-x-2">
+              <span>Date: ${savingDate} - Amount: ${savingAmount} - <strong>Status: ${savingStatus}</strong></span>
+              ${savingStatus === 'PENDING' && savingId ? `
+                <button onclick="updateSavingStatus('${savingId}', 'APPROVED')" class="text-green-600">
+                  ✅ Approve
+                </button>
+                <button onclick="updateSavingStatus('${savingId}', 'REJECTED')" class="text-red-600">
+                  ❌ Reject
+                </button>
+              ` : ''}
+            </li>`;
+        });
+      } catch (error) {
+        console.error("Error in loadAllSavings:", error);
+        const list = document.getElementById("all-saving-list");
+        if (list) {
+            list.innerHTML = "<li>An error occurred while loading savings.</li>";
+        }
+      }
+    }
+
+    async function updateSavingStatus(id, status) {
+      const username = localStorage.getItem("username");
+      const password = localStorage.getItem("password");
+      console.log(`Updating saving status for ID: ${id} to ${status}`);
+      try {
+        const response = await fetch(`/api/loans/updateSavingStatus?username=${username}&password=${password}&savingId=${id}&status=${status}`, {
+          method: "POST"
+        });
+        if (!response.ok) {
+            console.error("Failed to update saving status:", response.status, await response.text());
+            alert("Failed to update saving status."); // Or some other user feedback
+        }
+        loadAllSavings(); // Refresh the list
+      } catch (error) {
+          console.error("Error calling updateSavingStatus API:", error);
+          alert("An error occurred while trying to update saving status.");
+      }
+    }
+
+    async function loadWeeklyRate() {
+      const annualRate = 10; // Example annual rate
+      try {
+        const res = await fetch(`/api/loans/weeklyRate?annualRate=${annualRate}`);
+        if (!res.ok) {
+          console.error("Failed to fetch weekly rate.");
+          document.getElementById("weekly-rate").innerText = "Error loading rate.";
+          return;
+        }
+        const rate = await res.json();
+        document.getElementById("weekly-rate").innerText = `Weekly Rate: ${rate.toFixed(2)}%`;
+      } catch (error) {
+        console.error("Error fetching weekly rate:", error);
+        document.getElementById("weekly-rate").innerText = "Error loading rate.";
+      }
+    }
+  </script>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #e0f7ff;
+      color: #003366;
+      margin: 0;
+      padding: 0;
+    }
+    h1, h2 {
+      font-weight: bold;
+      text-transform: uppercase;
+      border: 2px solid #003366;
+      padding: 10px;
+      background-color: #007acc;
+      color: white;
+    }
+    ul, div {
+      border: 2px solid #003366;
+      padding: 10px;
+      margin-bottom: 20px;
+      background-color: #cceeff;
+    }
+    button {
+      background-color: #003366;
+      color: white;
+      border: 2px solid #003366;
+      padding: 10px;
+      cursor: pointer;
+      transition: transform 0.2s;
+    }
+    button:hover {
+      transform: scale(1.1);
+    }
+    @media (max-width: 768px) {
+      body {
+        padding: 10px;
+      }
+      h1, h2 {
+        font-size: 1.5rem;
+      }
+      ul, div {
+        padding: 5px;
+      }
+      button {
+        padding: 5px;
+      }
+    }
+  </style>
+</head>
+<body class="p-8">
+  <h1 class="text-2xl mb-4">Manager Dashboard</h1>
+
+  <h2 class="text-xl mt-6 mb-2">All Loans</h2>
+  <ul id="loan-list" class="space-y-2">
+    </ul>
+
+  <h2 id='saving-list-heading' class="text-xl mt-6 mb-2">All Savings</h2> <ul id="all-saving-list" class="space-y-2">
+    </ul>
+
+  <h2 class="text-xl mt-6 mb-2">Weekly Loan Rate</h2>
+  <div id="weekly-rate" class="p-2 border rounded">Loading...</div>
+</body>
+</html>

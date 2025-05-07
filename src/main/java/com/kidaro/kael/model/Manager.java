@@ -1,14 +1,13 @@
 package com.kidaro.kael.model;
 
-import jakarta.persistence.DiscriminatorValue;
-import jakarta.persistence.Entity;
+import jakarta.persistence.*;
+import lombok.*;
 
 @Entity
-@DiscriminatorValue("MANAGER")
+@Getter
+@Setter
+@NoArgsConstructor
 public class Manager extends User {
-    public Manager() {}
 
-    public Manager(String username, String password) {
-        super(null, username, password);
-    }
+    // Additional fields for Manager if needed
 }
