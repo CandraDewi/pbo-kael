@@ -1,89 +1,58 @@
 <!DOCTYPE html>
-<html lang="en" class="bg-blue-50">
+<html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <title>Login</title>
-  <script defer>
-    async function login(event) {
-      event.preventDefault();
-      const role = document.getElementById("role").value;
-      const username = document.getElementById("username").value;
-      const password = document.getElementById("password").value;
-
-      const res = await fetch(`/api/auth/login/${role}?username=${username}&password=${password}`, {
-        method: "POST"
-      });
-
-      if (res.ok) {
-        localStorage.setItem("username", username);
-        localStorage.setItem("password", password);
-        window.location = role === "customer" ? "customer.html" : "manager.html";
-      } else {
-        alert("Login failed");
-      }
-    }
-  </script>
-  <script src="https://cdn.tailwindcss.com"></script>
-  <style>
-    body {
-      font-family: Arial, sans-serif;
-      background-color: #e0f7ff;
-      color: #003366;
-      margin: 0;
-      padding: 0;
-    }
-    form {
-      border: 2px solid #003366;
-      padding: 20px;
-      background-color: #cceeff;
-    }
-    h2 {
-      font-weight: bold;
-      text-transform: uppercase;
-      border: 2px solid #003366;
-      padding: 10px;
-      background-color: #007acc;
-      color: white;
-    }
-    input, select, button {
-      border: 2px solid #003366;
-      padding: 10px;
-      margin-bottom: 10px;
-      width: 100%;
-    }
-    button {
-      background-color: #003366;
-      color: white;
-      cursor: pointer;
-      transition: transform 0.2s;
-    }
-    button:hover {
-      transform: scale(1.1);
-    }
-    @media (max-width: 768px) {
-      form {
-        padding: 10px;
-      }
-      h2 {
-        font-size: 1.5rem;
-      }
-      input, select, button {
-        padding: 5px;
-      }
-    }
-  </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login - PokéMart</title>
+    <script src="https://cdn.tailwindcss.com"></script>
 </head>
-<body class="flex items-center justify-center h-screen">
-  <form class="bg-white p-8 rounded shadow-md space-y-4 w-96" onsubmit="login(event)">
-    <h2 class="text-xl font-bold">Login</h2>
-    <select id="role" class="w-full p-2 border rounded">
-      <option value="customer">Customer</option>
-      <option value="manager">Manager</option>
-    </select>
-    <input id="username" class="w-full p-2 border rounded" placeholder="Username" required />
-    <input id="password" type="password" class="w-full p-2 border rounded" placeholder="Password" required />
-    <button class="w-full bg-green-500 text-white p-2 rounded hover:bg-green-600">Login</button>
-    <a href="register.html" class="text-blue-500 text-sm">Create an account</a>
-  </form>
+<body class="bg-gray-100 min-h-screen flex items-center justify-center">
+    <div class="max-w-md w-full bg-white rounded-lg shadow-md p-6">
+        <h2 class="text-2xl font-bold mb-4 text-center">Login</h2>
+        <form id="loginForm" class="space-y-4">
+            <div>
+                <label class="block text-sm font-medium text-gray-700">Username</label>
+                <input type="text" id="username" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm p-2 border" required>
+            </div>
+            <div>
+                <label class="block text-sm font-medium text-gray-700">Password</label>
+                <input type="password" id="password" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm p-2 border" required>
+            </div>
+            <button type="submit" class="w-full bg-blue-600 text-white rounded-md py-2 hover:bg-blue-700">Login</button>
+        </form>
+        <p class="mt-4 text-center text-sm">Don't have an account? <a href="register.html" class="text-blue-600 hover:underline">Register</a></p>
+        <div id="loginError" class="text-red-500 text-center mt-2 hidden"></div>
+    </div>
+    <script>
+        document.getElementById('loginForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const username = document.getElementById('username').value;
+            const password = document.getElementById('password').value;
+            const errorDiv = document.getElementById('loginError');
+            errorDiv.classList.add('hidden');
+            try {
+                const response = await fetch('/auth/login', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ username, password })
+                });
+                if (response.ok) {
+                    const user = await response.json();
+                    sessionStorage.setItem('user', JSON.stringify(user));
+                    if (user.role === 'POKENURSE') {
+                        window.location.href = 'nurse.html';
+                    } else {
+                        window.location.href = 'trainer.html';
+                    }
+                } else {
+                    errorDiv.textContent = 'Invalid credentials';
+                    errorDiv.classList.remove('hidden');
+                }
+            } catch (err) {
+                errorDiv.textContent = 'Login failed: ' + err.message;
+                errorDiv.classList.remove('hidden');
+            }
+        });
+    </script>
 </body>
 </html>

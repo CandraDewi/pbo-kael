@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nurse Dashboard - PokéMart</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-100 min-h-screen">
+    <nav class="bg-white shadow-md rounded-lg p-4 mb-8 max-w-2xl mx-auto mt-8">
+        <div class="flex justify-between items-center">
+            <h1 class="text-2xl font-bold">Nurse Dashboard</h1>
+            <button id="logoutBtn" class="bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600">Logout</button>
+        </div>
+    </nav>
+    <main class="max-w-2xl mx-auto grid grid-cols-1 gap-8">
+        <section class="bg-white rounded-lg shadow-md p-6">
+            <h2 class="text-xl font-bold mb-4">Item Management</h2>
+            <div id="itemsList" class="space-y-2"></div>
+        </section>
+        <section class="bg-white rounded-lg shadow-md p-6">
+            <h2 class="text-xl font-bold mb-4">Rested Pokémon</h2>
+            <div id="restedPokemonList" class="space-y-2"></div>
+        </section>
+        <section class="bg-white rounded-lg shadow-md p-6">
+            <h2 class="text-xl font-bold mb-4">Recent Transactions</h2>
+            <div id="recentTransactions" class="space-y-2"></div>
+        </section>
+    </main>
+    <script>
+        function showToast(message, isError = false) {
+            const toast = document.createElement('div');
+            toast.className = `toast ${isError ? 'bg-red-500' : 'bg-green-500'} text-white`;
+            toast.textContent = message;
+            document.body.appendChild(toast);
+            setTimeout(() => toast.remove(), 3000);
+        }
+        document.getElementById('logoutBtn').addEventListener('click', () => {
+            sessionStorage.removeItem('user');
+            window.location.href = 'login.html';
+        });
+        async function loadItems() {
+            try {
+                const response = await fetch('/pokemart/items');
+                const items = await response.json();
+                const itemsList = document.getElementById('itemsList');
+                itemsList.innerHTML = items.map(item => `
+                    <div class="flex items-center justify-between p-2 border rounded">
+                        <div>
+                            <span class="font-bold">${item.name}</span>
+                            <span class="text-sm text-gray-600">Stock: ${item.stockQuantity}</span>
+                            <span class="text-sm text-gray-600">Price: ₽${item.price}</span>
+                        </div>
+                        <div class="flex gap-2">
+                            <input type="number" class="restock-qty w-20 p-1 border rounded" data-item-id="${item.id}" placeholder="Qty">
+                            <input type="number" class="restock-price w-20 p-1 border rounded" data-item-id="${item.id}" placeholder="Price">
+                            <button onclick="restockItem(${item.id})" class="bg-blue-500 text-white px-2 py-1 rounded hover:bg-blue-600">
+                                Restock
+                            </button>
+                        </div>
+                    </div>
+                `).join('');
+            } catch (error) {
+                showToast('Failed to load items: ' + error.message, true);
+            }
+        }
+        async function restockItem(itemId) {
+            const qtyInput = document.querySelector(`.restock-qty[data-item-id="${itemId}"]`);
+            const priceInput = document.querySelector(`.restock-price[data-item-id="${itemId}"]`);
+            const qty = parseInt(qtyInput.value);
+            const price = parseFloat(priceInput.value);
+            try {
+                const response = await fetch(`/pokemart/restock/${itemId}?qty=${qty}&price=${price}`, {
+                    method: 'POST'
+                });
+                if (response.ok) {
+                    showToast('Item restocked successfully');
+                    loadItems();
+                } else {
+                    showToast('Failed to restock item', true);
+                }
+            } catch (error) {
+                showToast('Failed to restock item: ' + error.message, true);
+            }
+        }
+        async function loadRestedPokemon() {
+            try {
+                const response = await fetch('/pokemart/rested-pokemon');
+                const pokemons = await response.json();
+                const list = document.getElementById('restedPokemonList');
+                list.innerHTML = pokemons.map(p => `
+                    <div class="p-2 border rounded">
+                        <span class="font-bold">${p.name}</span>
+                        <span class="text-sm text-gray-600">Started: ${p.restStartDate}</span>
+                    </div>
+                `).join('');
+            } catch (error) {
+                showToast('Failed to load rested Pokémon: ' + error.message, true);
+            }
+        }
+        async function loadRecentTransactions() {
+            document.getElementById('recentTransactions').innerHTML = '<div class="text-gray-500">Feature coming soon.</div>';
+        }
+        window.addEventListener('load', () => {
+            const user = sessionStorage.getItem('user');
+            if (!user || JSON.parse(user).role !== 'POKENURSE') {
+                window.location.href = 'login.html';
+                return;
+            }
+            loadItems();
+            loadRestedPokemon();
+            loadRecentTransactions();
+        });
+    </script>
+    <style>
+        .toast {
+            position: fixed;
+            top: 1rem;
+            right: 1rem;
+            padding: 1rem;
+            border-radius: 0.5rem;
+            z-index: 50;
+            animation: slideIn 0.3s ease-out;
+        }
+        @keyframes slideIn {
+            from { transform: translateX(100%); }
+            to { transform: translateX(0); }
+        }
+    </style>
+</body>
+</html>

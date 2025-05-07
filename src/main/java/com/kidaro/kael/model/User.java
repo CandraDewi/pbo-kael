@@ -1,25 +1,33 @@
 package com.kidaro.kael.model;
 
-import jakarta.persistence.*;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.*;
+import jakarta.persistence.*;
+import java.util.List;
 
-@MappedSuperclass
-@Getter
-@Setter
+@Entity
+@Data
 @NoArgsConstructor
 @AllArgsConstructor
-public abstract class User {
+@Builder
+@Table(name = "pokemon_users")
+public class User {
+    @Id @GeneratedValue
+    private Long id;
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.UUID)
-    private String id;
+    private String username;
+    private String password;
 
-    @Column(unique = true, nullable = false)
-    protected String username;
+    @Enumerated(EnumType.STRING)
+    private Role role;
 
-    @Column(nullable = false)
-    protected String password;
+    @JsonManagedReference
+    @OneToMany(mappedBy = "owner")
+    private List<Pokemon> pokemons;
 
-    @Column(nullable = false)
-    protected String role;
+    @JsonIgnore
+    @OneToMany(mappedBy = "user")
+    private List<Transaction> transactions;
 }
+

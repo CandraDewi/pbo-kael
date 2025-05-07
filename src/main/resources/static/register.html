@@ -1,83 +1,56 @@
 <!DOCTYPE html>
-<html lang="en" class="bg-blue-50">
+<html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <title>Register</title>
-  <script defer>
-    async function register(event) {
-      event.preventDefault();
-      const username = document.getElementById("username").value;
-      const password = document.getElementById("password").value;
-
-      const res = await fetch(`/api/auth/register?username=${username}&password=${password}`, {
-        method: "POST"
-      });
-
-      if (res.ok) {
-        alert("Registered!");
-        window.location = "login.html";
-      } else {
-        alert("Error");
-      }
-    }
-  </script>
-  <script src="https://cdn.tailwindcss.com"></script>
-  <style>
-    body {
-      font-family: Arial, sans-serif;
-      background-color: #e0f7ff;
-      color: #003366;
-      margin: 0;
-      padding: 0;
-    }
-    form {
-      border: 2px solid #003366;
-      padding: 20px;
-      background-color: #cceeff;
-    }
-    h2 {
-      font-weight: bold;
-      text-transform: uppercase;
-      border: 2px solid #003366;
-      padding: 10px;
-      background-color: #007acc;
-      color: white;
-    }
-    input, button {
-      border: 2px solid #003366;
-      padding: 10px;
-      margin-bottom: 10px;
-      width: 100%;
-    }
-    button {
-      background-color: #003366;
-      color: white;
-      cursor: pointer;
-      transition: transform 0.2s;
-    }
-    button:hover {
-      transform: scale(1.1);
-    }
-    @media (max-width: 768px) {
-      form {
-        padding: 10px;
-      }
-      h2 {
-        font-size: 1.5rem;
-      }
-      input, button {
-        padding: 5px;
-      }
-    }
-  </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Register - PokéMart</title>
+    <script src="https://cdn.tailwindcss.com"></script>
 </head>
-<body class="flex items-center justify-center h-screen">
-  <form class="bg-white p-8 rounded shadow-md space-y-4 w-96" onsubmit="register(event)">
-    <h2 class="text-xl font-bold">Register</h2>
-    <input id="username" class="w-full p-2 border rounded" placeholder="Username" required />
-    <input id="password" type="password" class="w-full p-2 border rounded" placeholder="Password" required />
-    <button class="w-full bg-blue-500 text-white p-2 rounded hover:bg-blue-600">Register</button>
-    <a href="login.html" class="text-blue-500 text-sm">Already have an account?</a>
-  </form>
+<body class="bg-gray-100 min-h-screen flex items-center justify-center">
+    <div class="max-w-md w-full bg-white rounded-lg shadow-md p-6">
+        <h2 class="text-2xl font-bold mb-4 text-center">Register</h2>
+        <form id="registerForm" class="space-y-4">
+            <div>
+                <label class="block text-sm font-medium text-gray-700">Username</label>
+                <input type="text" id="username" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm p-2 border" required>
+            </div>
+            <div>
+                <label class="block text-sm font-medium text-gray-700">Password</label>
+                <input type="password" id="password" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm p-2 border" required>
+            </div>
+            <button type="submit" class="w-full bg-green-600 text-white rounded-md py-2 hover:bg-green-700">Register</button>
+        </form>
+        <p class="mt-4 text-center text-sm">Already have an account? <a href="login.html" class="text-blue-600 hover:underline">Login</a></p>
+        <div id="registerError" class="text-red-500 text-center mt-2 hidden"></div>
+        <div id="registerSuccess" class="text-green-500 text-center mt-2 hidden"></div>
+    </div>
+    <script>
+        document.getElementById('registerForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const username = document.getElementById('username').value;
+            const password = document.getElementById('password').value;
+            const errorDiv = document.getElementById('registerError');
+            const successDiv = document.getElementById('registerSuccess');
+            errorDiv.classList.add('hidden');
+            successDiv.classList.add('hidden');
+            try {
+                const response = await fetch('/auth/register', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ username, password })
+                });
+                if (response.ok) {
+                    successDiv.textContent = 'Registration successful! You can now login.';
+                    successDiv.classList.remove('hidden');
+                } else {
+                    errorDiv.textContent = 'Registration failed.';
+                    errorDiv.classList.remove('hidden');
+                }
+            } catch (err) {
+                errorDiv.textContent = 'Registration failed: ' + err.message;
+                errorDiv.classList.remove('hidden');
+            }
+        });
+    </script>
 </body>
 </html>

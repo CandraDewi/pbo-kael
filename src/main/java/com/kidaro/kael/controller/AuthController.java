@@ -1,29 +1,36 @@
 package com.kidaro.kael.controller;
-import com.kidaro.kael.model.Customer;
-import com.kidaro.kael.model.Manager;
-import com.kidaro.kael.service.AuthService;
+
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
+import com.kidaro.kael.model.Role;
+import com.kidaro.kael.model.User;
+import com.kidaro.kael.repository.UserRepository;
+
 import lombok.RequiredArgsConstructor;
-import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("/api/auth")
 @RequiredArgsConstructor
+@RequestMapping("/auth")
 public class AuthController {
-
-    private final AuthService authService;
+    private final UserRepository userRepo;
 
     @PostMapping("/register")
-    public Customer register(@RequestParam String username, @RequestParam String password) {
-        return authService.registerCustomer(username, password);
+    public User register(@RequestBody User user) {
+        user.setRole(Role.USER); // default role
+        return userRepo.save(user);
     }
 
-    @PostMapping("/login/customer")
-    public Customer loginCustomer(@RequestParam String username, @RequestParam String password) {
-        return authService.loginCustomer(username, password);
-    }
-
-    @PostMapping("/login/manager")
-    public Manager loginManager(@RequestParam String username, @RequestParam String password) {
-        return authService.loginManager(username, password);
+    @PostMapping("/login")
+    public ResponseEntity<?> login(@RequestBody User user) {
+        return userRepo.findByUsername(user.getUsername())
+            .filter(u -> u.getPassword().equals(user.getPassword()))
+            .map(u -> ResponseEntity.ok(u))
+            .orElse(ResponseEntity.status(HttpStatus.UNAUTHORIZED).build());
     }
 }
+
