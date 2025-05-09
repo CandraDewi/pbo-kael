@@ -14,6 +14,10 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 import java.util.Map;
 import java.util.HashMap;
+import java.util.NoSuchElementException;
+
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 
 @RestController
 @RequiredArgsConstructor
@@ -59,6 +63,11 @@ public class PokeMartController {
         return transactionService.generateReceipt(transactionId);
     }
 
+    @GetMapping("/all-transactions")
+    public List<ItemPurchaseTransaction> getAllTransactions() {
+        return transactionService.getAllTransactions();
+    }
+
     @GetMapping("/my-pokemon")
     public List<Pokemon> getMyPokemon(@RequestParam String username) {
         return pokemonService.findUserPokemons(username);
@@ -68,4 +77,6 @@ public class PokeMartController {
     public List<ItemPurchaseTransaction> getMyTransactions(@RequestParam String username) {
         return transactionService.getTransactionsByUsername(username);
     }
+
+
 }

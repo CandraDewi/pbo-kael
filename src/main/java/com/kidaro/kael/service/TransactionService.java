@@ -2,16 +2,19 @@ package com.kidaro.kael.service;
 
 import com.kidaro.kael.model.Item;
 import com.kidaro.kael.model.ItemPurchaseTransaction;
+import com.kidaro.kael.model.RestFeeTransaction;
 import com.kidaro.kael.model.TransactionItem;
 import com.kidaro.kael.model.User;
 import com.kidaro.kael.repository.ItemRepository;
 import com.kidaro.kael.repository.ItemPurchaseTransactionRepository;
+import com.kidaro.kael.repository.RestFeeTransactionRepository;
 import com.kidaro.kael.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
 @Service
@@ -20,6 +23,12 @@ public class TransactionService {
     private final ItemRepository itemRepo;
     private final ItemPurchaseTransactionRepository transactionRepo;
     private final UserRepository userRepo;
+    private final RestFeeTransactionRepository restFeeTransactionRepo;
+
+    public List<ItemPurchaseTransaction> getAllTransactions() {
+        
+        return transactionRepo.findAll();
+    }
 
     public ItemPurchaseTransaction purchaseItems(String username, Map<Long, Integer> items) {
         User user = userRepo.findByUsername(username).orElseThrow();
@@ -106,4 +115,6 @@ public class TransactionService {
         User user = userRepo.findByUsername(username).orElseThrow();
         return transactionRepo.findAllByUser(user);
     }
+
+
 }
