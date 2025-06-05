@@ -1,127 +1,127 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Login - Poké Portal</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <style>
-        body {
-            font-family: 'Arial', sans-serif; /* Fallback, Tailwind's sans will usually take over */
-        }
-        /* Style scrollbars for a bit more thematic feel if desired (for consistency) */
-        ::-webkit-scrollbar {
-            width: 12px;
-            height: 12px;
-        }
-        ::-webkit-scrollbar-track {
-            background: #fde047; /* yellow-300 */
-            border-left: 2px solid black;
-            border-right: 2px solid black;
-        }
-        ::-webkit-scrollbar-thumb {
-            background: #ef4444; /* red-500 */
-            border: 2px solid black;
-        }
-        ::-webkit-scrollbar-thumb:hover {
-            background: #dc2626; /* red-600 */
-        }
-    </style>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Login - GolfHub</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    body {
+      font-family: 'Arial Black', Gadget, sans-serif;
+    }
+
+    ::-webkit-scrollbar {
+      width: 10px;
+    }
+    ::-webkit-scrollbar-track {
+      background: #1f2937; /* gray-800 */
+    }
+    ::-webkit-scrollbar-thumb {
+      background-color: #22c55e; /* green-500 */
+      border-radius: 8px;
+    }
+
+    @keyframes slideIn {
+      from {
+        opacity: 0;
+        transform: translateY(-20px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .animate-slideIn {
+      animation: slideIn 0.6s ease-out;
+    }
+  </style>
 </head>
-<body class="bg-yellow-300 min-h-screen flex flex-col items-center justify-center p-4 selection:bg-pink-500 selection:text-white">
+<body class="bg-gradient-to-br from-green-600 to-black min-h-screen flex flex-col items-center justify-center px-6 py-12 text-white selection:bg-white selection:text-black">
 
-    <div class="max-w-md w-full bg-red-500 text-white rounded-none border-4 border-black shadow-[8px_8px_0px_#000000] p-8 sm:p-10">
-        <h1 class="text-4xl font-extrabold mb-2 text-center">
-            <span class="block">POKÉ</span>
-            <span class="block">PORTAL</span>
-        </h1>
-        <h2 class="text-xl font-bold mb-8 text-center uppercase tracking-wider">Trainer Access</h2>
+  <div class="max-w-md w-full bg-black bg-opacity-80 backdrop-blur-md rounded-2xl border-4 border-green-500 p-10 animate-slideIn shadow-[0_10px_30px_rgba(0,0,0,0.5)]">
+    <h1 class="text-4xl font-extrabold text-green-400 text-center mb-2">GOLFHUB</h1>
+    <h2 class="text-xl font-semibold uppercase tracking-wide text-center mb-8 text-white">Player Login</h2>
 
-        <form id="loginForm" class="space-y-6">
-            <div>
-                <label for="username" class="block text-sm font-bold uppercase mb-1">Trainer ID (Username)</label>
-                <input type="text" id="username" class="mt-1 block w-full rounded-none border-2 border-black shadow-sm p-3 bg-white text-black focus:outline-none focus:ring-4 focus:ring-yellow-400 focus:border-black placeholder:text-neutral-500" required placeholder="e.g. AshKetchum">
-            </div>
-            <div>
-                <label for="password" class="block text-sm font-bold uppercase mb-1">Secret Code (Password)</label>
-                <input type="password" id="password" class="mt-1 block w-full rounded-none border-2 border-black shadow-sm p-3 bg-white text-black focus:outline-none focus:ring-4 focus:ring-yellow-400 focus:border-black placeholder:text-neutral-500" required placeholder="••••••••">
-            </div>
-            <button type="submit" class="w-full bg-yellow-400 text-black rounded-none border-2 border-black font-bold py-3 px-4 uppercase tracking-wider shadow-[3px_3px_0px_#000000] hover:bg-yellow-300 active:bg-yellow-500 active:translate-x-[2px] active:translate-y-[2px] active:shadow-[1px_1px_0px_#000000] transition-all duration-50">Enter Portal</button>
-        </form>
-        <p class="mt-8 text-center text-sm">
-            New Trainer?
-            <a href="register.html" class="font-bold text-yellow-300 hover:text-white hover:underline">Register Here!</a>
-        </p>
-        <div id="loginError" class="text-yellow-300 font-semibold bg-black/40 p-3 mt-6 text-center rounded-none border-2 border-black/50 hidden break-words"></div>
-    </div>
+    <form id="loginForm" class="space-y-6">
+      <div>
+        <label for="username" class="block text-sm font-bold uppercase mb-1">Username</label>
+        <input type="text" id="username" placeholder="e.g. CandraManika" class="w-full px-4 py-3 rounded-md bg-white text-black border-2 border-green-600 focus:outline-none focus:ring-4 focus:ring-green-400 font-semibold" required>
+      </div>
+      <div>
+        <label for="password" class="block text-sm font-bold uppercase mb-1">Password</label>
+        <input type="password" id="password" placeholder="••••••••" class="w-full px-4 py-3 rounded-md bg-white text-black border-2 border-green-600 focus:outline-none focus:ring-4 focus:ring-green-400 font-semibold" required>
+      </div>
+      <button type="submit" class="w-full bg-green-500 hover:bg-green-400 text-black font-extrabold py-3 px-4 uppercase tracking-widest rounded-md shadow-md transition-transform transform hover:scale-105">
+        Enter Portal
+      </button>
+    </form>
 
-    <footer class="text-center py-8 mt-12 absolute bottom-0">
-        <p class="font-mono text-sm text-neutral-700">PokéMart Systems &copy; <span id="currentYear"></span> - Secure Access</p>
-    </footer>
+    <p class="mt-6 text-center text-sm text-gray-300">
+      Don’t have an account? 
+      <a href="register.html" class="text-green-400 font-bold hover:underline">Register here</a>
+    </p>
 
-    <script>
-        document.getElementById('currentYear').textContent = new Date().getFullYear();
+    <div id="loginError" class="text-yellow-300 font-semibold bg-black/50 p-3 mt-6 text-center rounded-md border border-yellow-400 hidden"></div>
+  </div>
 
-        document.getElementById('loginForm').addEventListener('submit', async (e) => {
-            e.preventDefault();
-            const username = document.getElementById('username').value;
-            const password = document.getElementById('password').value;
-            const errorDiv = document.getElementById('loginError');
-            const loginButton = e.target.querySelector('button[type="submit"]');
+  <footer class="text-center mt-12 text-green-100 text-sm tracking-wider">
+    &copy; <span id="currentYear"></span> GolfHub Central — Keep Swingin’
+  </footer>
 
-            errorDiv.classList.add('hidden');
-            errorDiv.textContent = ''; // Clear previous errors
-            loginButton.disabled = true;
-            loginButton.textContent = 'Checking...';
+  <script>
+    document.getElementById('currentYear').textContent = new Date().getFullYear();
 
+    document.getElementById('loginForm').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const username = document.getElementById('username').value;
+      const password = document.getElementById('password').value;
+      const errorDiv = document.getElementById('loginError');
+      const loginButton = e.target.querySelector('button[type="submit"]');
 
-            try {
-                const response = await fetch('/auth/login', { // Ensure this endpoint is correct
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ username, password })
-                });
+      errorDiv.classList.add('hidden');
+      errorDiv.textContent = '';
+      loginButton.disabled = true;
+      loginButton.textContent = 'Verifying...';
 
-                if (response.ok) {
-                    const user = await response.json();
-                    sessionStorage.setItem('user', JSON.stringify(user));
-                    
-                    loginButton.textContent = 'Success!';
-                    loginButton.classList.remove('bg-yellow-400', 'hover:bg-yellow-300', 'active:bg-yellow-500');
-                    loginButton.classList.add('bg-green-500', 'text-white');
-
-
-                    // Redirect after a short delay to show success message
-                    setTimeout(() => {
-                        if (user.role === 'POKENURSE') { // Or 'NURSE', 'ADMIN' etc. adjust as per your roles
-                            window.location.href = 'nurse.html';
-                        } else if (user.role === 'USER') { // Assuming 'USER' is for trainers
-                             window.location.href = 'trainer.html';
-                        } else {
-                            // Fallback or default redirect if role is unrecognized
-                            window.location.href = 'trainer.html';
-                        }
-                    }, 1000);
-
-                } else {
-                    const errorData = await response.json().catch(() => null); // Try to parse error JSON
-                    if (response.status === 401 || response.status === 400) {
-                        errorDiv.textContent = errorData?.message || 'Invalid Trainer ID or Secret Code. Try again!';
-                    } else {
-                        errorDiv.textContent = errorData?.message || `Error: ${response.status}. Please try again later.`;
-                    }
-                    errorDiv.classList.remove('hidden');
-                    loginButton.disabled = false;
-                    loginButton.textContent = 'Enter Portal';
-                }
-            } catch (err) {
-                console.error("Login Fetch Error:", err);
-                errorDiv.textContent = 'Network problem or server is down. Please check your connection and try again.';
-                errorDiv.classList.remove('hidden');
-                loginButton.disabled = false;
-                loginButton.textContent = 'Enter Portal';
-            }
+      try {
+        const response = await fetch('/auth/login', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ username, password })
         });
-    </script>
+
+        if (response.ok) {
+          const user = await response.json();
+          sessionStorage.setItem('user', JSON.stringify(user));
+
+          loginButton.textContent = 'Success!';
+          loginButton.classList.replace('bg-green-500', 'bg-white');
+          loginButton.classList.replace('text-black', 'text-green-600');
+
+          setTimeout(() => {
+            if (user.role === 'POKENURSE') {
+              window.location.href = 'nurse.html';
+            } else if (user.role === 'USER') {
+              window.location.href = 'trainer.html';
+            } else {
+              window.location.href = 'trainer.html';
+            }
+          }, 1000);
+        } else {
+          const errorData = await response.json().catch(() => null);
+          errorDiv.textContent = errorData?.message || 'Login failed. Please try again.';
+          errorDiv.classList.remove('hidden');
+          loginButton.disabled = false;
+          loginButton.textContent = 'Enter Portal';
+        }
+      } catch (err) {
+        errorDiv.textContent = 'Network error. Please check your connection.';
+        errorDiv.classList.remove('hidden');
+        loginButton.disabled = false;
+        loginButton.textContent = 'Enter Portal';
+      }
+    });
+  </script>
 </body>
 </html>

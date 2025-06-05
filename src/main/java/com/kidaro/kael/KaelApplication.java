@@ -35,8 +35,8 @@ public class KaelApplication {
                 User nurse = User.builder()
                     .username("joy")
                     .password("chansey123")
-                    .role(Role.POKENURSE)
-                    .build();
+                    .role(Role.ADMIN)
+                    .build();   
                 userRepo.save(nurse);
             }
 
